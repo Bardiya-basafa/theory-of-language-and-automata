@@ -286,11 +286,12 @@ class TuringMachine:
                 print(f"step {step}, state: {state}, symbol: {symbol}")
                 print(f"\ttape: {tape}")
                 print()
+
             else:
                 print(f"step {step}, state: {state}, symbol: {symbol}")
                 print(f"\ttape: {tape}")
                 print()
                 halted = True
                 return
-
-            # logging.warning("Debug stopped after reaching the step limit.")
+        if not halted:
+            logging.warning("Debug stopped after reaching the step limit.")
