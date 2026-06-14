@@ -32,33 +32,56 @@ from turing_machine import TuringMachine
 # Because execution is done in a generator, it’s possible to have infinite executions
 #         but the acceptance checks are limited by the number of steps they are allowed to perform.
 
-#create the Turing machine
+# create the Turing machine
 bbeaver2 = TuringMachine(
-    { 
+    {
         # TODO: Part III c) - Write your transition rules for the 2-card Busy Beaver program here
+        ("a", "0"): ("b", "1", "R"),
+        ("b", "0"): ("a", "1", "L"),
+        ("a", "1"): ("b", "1", "L"),
+        ("b", "1"): ("h", "1", "R"),
     },
-    start_state='a', accept_state='h', reject_state='r', blank_symbol='0'
+    start_state="a",
+    accept_state="h",
+    reject_state="r",
+    blank_symbol="0",
 )
 bbeaver3 = TuringMachine(
     {
         # TODO: Part III e) - Write your own transition rules for the 3-card Busy Beaver program here
+        ("a", "0"): ("b", "1", "R"),
+        ("a", "1"): ("c", "1", "L"),
+        ("b", "1"): ("b", "1", "R"),
+        ("b", "0"): ("a", "1", "L"),
+        ("c", "0"): ("b", "1", "L"),
+        ("c", "1"): ("h", "1", "R"),
     },
-    start_state='a', accept_state='h', reject_state='r', blank_symbol='0'
+    start_state="a",
+    accept_state="h",
+    reject_state="r",
+    blank_symbol="0",
 )
 bbeaver4 = TuringMachine(
     {
         # TODO: Part III e) - Write your own transition rules for the 4-card Busy Beaver program here
     },
-    start_state='a', accept_state='h', reject_state='r', blank_symbol='0'
+    start_state="a",
+    accept_state="h",
+    reject_state="r",
+    blank_symbol="0",
 )
 bbeaver5 = TuringMachine(
     {
         # TODO: Part III f) - Write your own transition rules for the 5-card Busy Beaver program here
     },
-    start_state='a', accept_state='h', reject_state='r', blank_symbol='0'
+    start_state="a",
+    accept_state="h",
+    reject_state="r",
+    blank_symbol="0",
 )
 
 if __name__ == "__main__":
+
     def run(input_):
         w = input_
         # the same as mine 4 ones
@@ -70,13 +93,13 @@ if __name__ == "__main__":
         print("BB with 3 states")
         bbeaver3.debug(w, step_limit=1000)
         print()
-        # 13
-        print("BB with 4 states")
-        bbeaver4.debug(w, step_limit=1000)
-        print()
-        # This machine runs for 47176870 steps, writing 4098 1s, and then halts. So BB(5) is at least 47176870
-        print("BB with 5 states")
-        bbeaver5.debug(w, step_limit=1000)
+        # # 13
+        # print("BB with 4 states")
+        # bbeaver4.debug(w, step_limit=1000)
+        # print()
+        # # This machine runs for 47176870 steps, writing 4098 1s, and then halts. So BB(5) is at least 47176870
+        # print("BB with 5 states")
+        # bbeaver5.debug(w, step_limit=1000)
         print()
         # The busy beaver function is defined so that
         # \Sigma(n) = max { \sigma(M) | M is a halting n-state 2-symbol Turing machine}
@@ -94,6 +117,6 @@ if __name__ == "__main__":
         # a machine of the required type and determining its size n, calculating BB(n) and running the machine.
         # If it runs more than BB(n) steps, then, by definition, it must run forever.
 
-    run('00000000000000')  # 14 0
+    run("00000000000000")  # 14 0
 
 # bbeaver.debug('00000000000000', step_limit=1000)
