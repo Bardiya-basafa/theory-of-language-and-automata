@@ -2,13 +2,18 @@
 from turing_machine import TuringMachine
 from test_turing_machine_example1 import print_states
 
-#create the Turing machine
+# create the Turing machine
 transitions = {
-        # TODO: Part II a) - Write your transition rules here as entries to a Python dictionary
-        # For example, the key will be a pair (state, character)
-        # The value will be the triple (next state, character to write, move head L or R)
-        # such as ('q0', '1'): ('q1', '0', 'R'), which says if current state is q0 and 1 encountered
-        # then transition to state q1, write a 0 and move head right.
+    # TODO: Part II a) - Write your transition rules here as entries to a Python dictionary
+    # For example, the key will be a pair (state, character)
+    # The value will be the triple (next state, character to write, move head L or R)
+    # such as ('q0', '1'): ('q1', '0', 'R'), which says if current state is q0 and 1 encountered
+    # then transition to state q1, write a 0 and move head right.
+    ("q0", "1"): ("q0", "1", "R"),
+    ("q0", "0"): ("q1", "1", "R"),
+    ("q1", "1"): ("q1", "1", "R"),
+    ("q1", ""): ("q2", "", "L"),
+    ("q2", "1"): ("qa", "", "R"),
 }
 
 if __name__ == "__main__":
@@ -17,9 +22,9 @@ if __name__ == "__main__":
 
     def run(input_):
         w = input_
-        print("Input:",w)
+        print("Input:", w)
         print("Accepted" if machine.accepts(w) else "Rejected")
-        machine.debug(w)
+        machine.debug(w, colored=True)
         print()
 
     # SHOULD ACCEPT

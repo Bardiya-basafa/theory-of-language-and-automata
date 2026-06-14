@@ -176,6 +176,7 @@ class TuringMachine:
             if direction == "R":
                 left.insert(0, symbol)
                 if right:
+                    symbol = right[0]
                     right.pop(0)
                 else:
                     symbol = self.blank_symbol
@@ -183,6 +184,7 @@ class TuringMachine:
             elif direction == "L":
                 right.insert(0, symbol)
                 if left:
+                    symbol = left[0]
                     left.pop(0)
                 else:
                     symbol = self.blank_symbol
@@ -269,21 +271,25 @@ class TuringMachine:
             state = config["state"]
             left = config["left_hand_side"]
             right = config["right_hand_side"]
-            symbol = config["symbol"] if config["symbol"] != self.blank_symbol else "□"
+            symbol = config["symbol"]
 
             # make the left and right string (left should be revered)
             left = "".join(reversed(left))
             right = "".join(right)
 
             if colored:
-                tape = f"{left}\033[91m[{symbol}]\033[0m{right}"
+                tape = f"{left}\033[91m{symbol}\033[0m{right}"
             else:
                 tape = f"{left}{symbol}{right}"
 
             if action is None:
-                print(f"step {step}, {state}:{tape}")
+                print(f"step {step}, state: {state}, symbol: {symbol}")
+                print(f"\ttape: {tape}")
+                print()
             else:
-                print(f"step {step}, {state}:{tape}")
+                print(f"step {step}, state: {state}, symbol: {symbol}")
+                print(f"\ttape: {tape}")
+                print()
                 halted = True
                 return
 

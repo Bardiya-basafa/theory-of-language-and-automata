@@ -2,37 +2,30 @@ from turing_machine import TuringMachine
 from test_turing_machine_example1 import print_states
 
 transitions = {
-        ('q0', '#'): ('End', '#', 'R'),
-        ('End', ''): ('qa', '', 'R'),
-
-        ('q0', '0'): ('FindDelimiter0', 'X', 'R'),
-        ('FindDelimiter0', '#'): ('Check0', '#', 'R'),
-        ('Check0', '0'): ('FindLeftmost', 'X', 'L'),
-
-        ('q0', '1'): ('FindDelimiter1', 'X', 'R'),
-        ('FindDelimiter1', '#'): ('Check1', '#', 'R'),
-        ('Check1', '1'): ('FindLeftmost', 'X', 'L'),
-
-        ('FindLeftmost', '0'): ('FindLeftmost', '0', 'L'),
-        ('FindLeftmost', '1'): ('FindLeftmost', '1', 'L'),
-        ('FindLeftmost', 'X'): ('FindLeftmost', 'X', 'L'),
-        ('FindLeftmost', '#'): ('FindLeftmost', '#', 'L'),
-        ('FindLeftmost', ''): ('FindNext', '', 'R'),
-
-        ('FindNext', 'X'): ('FindNext', 'X', 'R'),
-        ('FindNext', '0'): ('FindDelimiter0', 'X', 'R'),
-        ('FindNext', '1'): ('FindDelimiter1', 'X', 'R'),
-        ('FindNext', '#'): ('End', '#', 'R'),
-
-        ('FindDelimiter0', '0'): ('FindDelimiter0', '0', 'R'),
-        ('FindDelimiter0', '1'): ('FindDelimiter0', '1', 'R'),
-        ('FindDelimiter1', '0'): ('FindDelimiter1', '0', 'R'),
-        ('FindDelimiter1', '1'): ('FindDelimiter1', '1', 'R'),
-
-        ('Check0', 'X'): ('Check0', 'X', 'R'),
-        ('Check1', 'X'): ('Check1', 'X', 'R'),
-
-        ('End', 'X'): ('End', 'X', 'R')
+    ("q0", "#"): ("End", "#", "R"),
+    ("End", ""): ("qa", "", "R"),
+    ("q0", "0"): ("FindDelimiter0", "X", "R"),
+    ("FindDelimiter0", "#"): ("Check0", "#", "R"),
+    ("Check0", "0"): ("FindLeftmost", "X", "L"),
+    ("q0", "1"): ("FindDelimiter1", "X", "R"),
+    ("FindDelimiter1", "#"): ("Check1", "#", "R"),
+    ("Check1", "1"): ("FindLeftmost", "X", "L"),
+    ("FindLeftmost", "0"): ("FindLeftmost", "0", "L"),
+    ("FindLeftmost", "1"): ("FindLeftmost", "1", "L"),
+    ("FindLeftmost", "X"): ("FindLeftmost", "X", "L"),
+    ("FindLeftmost", "#"): ("FindLeftmost", "#", "L"),
+    ("FindLeftmost", ""): ("FindNext", "", "R"),
+    ("FindNext", "X"): ("FindNext", "X", "R"),
+    ("FindNext", "0"): ("FindDelimiter0", "X", "R"),
+    ("FindNext", "1"): ("FindDelimiter1", "X", "R"),
+    ("FindNext", "#"): ("End", "#", "R"),
+    ("FindDelimiter0", "0"): ("FindDelimiter0", "0", "R"),
+    ("FindDelimiter0", "1"): ("FindDelimiter0", "1", "R"),
+    ("FindDelimiter1", "0"): ("FindDelimiter1", "0", "R"),
+    ("FindDelimiter1", "1"): ("FindDelimiter1", "1", "R"),
+    ("Check0", "X"): ("Check0", "X", "R"),
+    ("Check1", "X"): ("Check1", "X", "R"),
+    ("End", "X"): ("End", "X", "R"),
 }
 # # This machine matches identical strings of characters at either end of the delimiter, and transforms them into Xs
 # # computation:
@@ -48,11 +41,12 @@ transitions = {
 if __name__ == "__main__":
     print_states(transitions)
     machine = TuringMachine(transitions)
+
     def run(input_):
         w = input_
         print("Input:", w)
         print("Accepted" if machine.accepts(w) else "Rejected")
-        machine.debug(w)
+        machine.debug(w, colored=True)
         print()
 
     # ACCEPTS
