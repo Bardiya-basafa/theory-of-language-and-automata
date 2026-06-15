@@ -265,6 +265,7 @@ class TuringMachine:
         """
         # TODO: Loop over the steps yielded by run() up to step_limit and print the tape configuration.
         # E.g., print the state and the tape with the head highlighted in brackets like: left[symbol]right
+        halted = False
         for step, (action, config) in enumerate(islice(self.run(input_), step_limit)):
 
             # getting config properties
@@ -286,11 +287,7 @@ class TuringMachine:
                 print(f"step {step}, state: {state}, symbol: {symbol}")
                 print(f"\ttape: {tape}")
                 print()
-
             else:
-                print(f"step {step}, state: {state}, symbol: {symbol}")
-                print(f"\ttape: {tape}")
-                print()
                 halted = True
                 return
         if not halted:

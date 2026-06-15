@@ -1,7 +1,9 @@
 import sys
 
+
 class Error(Exception):
     pass
+
 
 class TuringMachine(object):
     def __init__(self, program, start, halt, init):
@@ -68,9 +70,9 @@ class TuringMachine(object):
         return self.program[lhs]
 
     def move_head(self, move):
-        if move == 'l':
+        if move == "l":
             self.pos -= 1
-        elif move == 'r':
+        elif move == "r":
             self.pos += 1
         else:
             raise Error('Unknown move "%s". It can only be left or right.' % move)
@@ -83,57 +85,100 @@ class TuringMachine(object):
 
         self.movez += 1
 
+
 beaver_programs = [
-    { },
     {
-        # TODO: Implement 1-state Busy Beaver program
+        # 1-state Busy Beaver
+        "a0": "h1r"
     },
     {
-        # TODO: Implement 2-state Busy Beaver program
+        # 2-state Busy Beaver
+        "a0": "b1r",
+        "b0": "a1l",
+        "a1": "b1l",
+        "b1": "h1r",
     },
     {
-        # TODO: Implement 3-state Busy Beaver program
+        # 3-state Busy Beaver
+        "a0": "b1r",
+        "a1": "c1l",
+        "b1": "b1r",
+        "b0": "a1l",
+        "c0": "b1l",
+        "c1": "h1r",
     },
     {
-        # TODO: Implement 4-state Busy Beaver program
+        # 4-state Busy Beaver
+        "a0": "b1r",
+        "a1": "b1l",
+        "b0": "a1l",
+        "b1": "c0l",
+        "c0": "h1r",
+        "c1": "d1l",
+        "d0": "d1r",
+        "d1": "a0r",
     },
     {
-        # TODO: Implement 5-state Busy Beaver program
+        # 5-state Busy Beaver
+        "a0": "b1r",
+        "a1": "c1l",
+        "b0": "c1r",
+        "b1": "b1r",
+        "c0": "d1r",
+        "c1": "e0l",
+        "d0": "a1l",
+        "d1": "d1l",
+        "e0": "h1h",
+        "e1": "a0l",
     },
     {
-        # TODO: Implement 6-state Busy Beaver program
-    }
+        # 6-state Busy Beaver
+        "a0": "b1r",
+        "a1": "a1r",
+        "b0": "c1r",
+        "b1": "h1r",
+        "c0": "d1l",
+        "c1": "f0r",
+        "d0": "a1r",
+        "d1": "e0l",
+        "e0": "d0l",
+        "e1": "c1r",
+        "f0": "a1r",
+        "f1": "e0r",
+    },
 ]
+
 
 def busy_beaver(n):
     def tape_callback(tape, tape_changed):
         if tape_changed:
-            print(''.join(tape))
+            print("".join(tape))
 
     program = beaver_programs[n]
 
     print("Running Busy Beaver with %d states." % n)
-    tm = TuringMachine(program, 'a', 'h', '0')
+    tm = TuringMachine(program, "a", "h", "0")
     tm.set_tape_callback(tape_callback)
     tm.run()
     print("Busy beaver finished in %d steps." % tm.moves)
+
 
 def usage():
     print("Usage: %s [1|2|3|4|5|6]" % sys.argv[0])
     print("Runs Busy Beaver problem for 1 or 2 or 3 or 4 or 5 or 6 states.")
     sys.exit(1)
 
-if __name__ == "__main__":
-    # if len(sys.argv[1:]) < 1:
-    #     usage()
-    #
-    # n = int(sys.argv[1])
-    #
-    # if n < 1 or n > 6:
-    #     print("n must be between 1 and 6 inclusive")
-    #     print()
-    #     usage()
-    #
-    # busy_beaver(n)
-    busy_beaver(5)
 
+if __name__ == "__main__":
+    if len(sys.argv[1:]) < 1:
+        usage()
+
+    n = int(sys.argv[1])
+
+    if n < 1 or n > 6:
+        print("n must be between 1 and 6 inclusive")
+        print()
+        usage()
+
+    busy_beaver(n)
+    # busy_beaver(0)
