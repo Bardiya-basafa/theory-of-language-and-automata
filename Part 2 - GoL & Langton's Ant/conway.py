@@ -7,9 +7,52 @@ This module defines the classes required for the GoL simulation.
 
 import numpy as np
 from scipy import signal, ndimage
+import re
 
 
-def parse_pattern(filepath, aliveValue, deadValue):
+def rle_parse(filepath):
+    with open(filepath, "r") as f:
+        lines = f.readlines()
+
+        pattern_lines = []
+        for line in lines:
+            line = line.strip()
+            if line and (not line.startswith("!") and not line.startswith("#")):
+                pattern_lines.append(line)
+
+        header = pattern_lines[0]
+
+        width = int(re.search(r"x\s*=\s*(\d+)", header).group(1))
+        height = int(re.search(r"y\s*=\s*(\d+)", header).group(1))
+
+        data = "".join(pattern_lines[1:]).strip()
+        live_cells = []
+        r = 0
+        c = 0
+        run_count = ""
+        for char in data:
+            if char.isdigit():
+                run_count += char
+            elif char in "ob$!":
+                count = int(run_count) if run_count else 1
+                run_count = ""
+
+                if char == "o":
+                    for _ in range(count):
+                        live_cells.append((r, c))
+                        c += 1
+                elif char == "b":
+                    c += count
+                elif char == "$":
+                    r += count
+                    c = 0
+                elif char == "!":
+                    break
+
+    return (width, height, live_cells)
+
+
+def parse_pattern(filepath: str, aliveValue, deadValue):
     """
     TODO: [Part 1d - RLE/Plaintext Parser]
     Write a parser for Run Length Encoded (RLE) or Plaintext (.cells) patterns
@@ -23,6 +66,8 @@ def parse_pattern(filepath, aliveValue, deadValue):
     """
     # Student TODO: Implement parser here
     # plain text parser
+    if filepath.endswith(".rle"):
+        return rle_parse(filepath)
 
     with open(filepath, "r") as f:
         lines = f.readlines()
@@ -54,8 +99,6 @@ def parse_pattern(filepath, aliveValue, deadValue):
                     live_cells.append((i, j))
 
         return (max_withd, len(pattern_lines), live_cells)
-
-    pass
 
 
 class GameOfLife:
