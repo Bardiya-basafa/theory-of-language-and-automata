@@ -36,7 +36,7 @@ def grid_to_surface(grid, cell_scale=1, alive_color=(255, 255, 255), dead_color=
 def run_pygame_life(life, cell_scale=1, fps=20, viewport=None, max_frames=None, title="Game of Life"):
     """Render a Game of Life simulation in a pygame window."""
     pygame.init()
-    cells = life.getStates()
+    cells = life.getGrid()
     surface = grid_to_surface(cells, cell_scale=cell_scale, viewport=viewport)
     screen = pygame.display.set_mode(surface.get_size())
     pygame.display.set_caption(title)
@@ -53,7 +53,7 @@ def run_pygame_life(life, cell_scale=1, fps=20, viewport=None, max_frames=None, 
         pygame.display.flip()
 
         life.evolve()
-        cells = life.getStates()
+        cells = life.getGrid()
         surface = grid_to_surface(cells, cell_scale=cell_scale, viewport=viewport)
 
         frame += 1

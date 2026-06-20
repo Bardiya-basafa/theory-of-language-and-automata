@@ -128,7 +128,7 @@ beaver_programs = [
         "c1": "e0l",
         "d0": "a1l",
         "d1": "d1l",
-        "e0": "h1h",
+        "e0": "h1r",
         "e1": "a0l",
     },
     {
@@ -152,11 +152,12 @@ beaver_programs = [
 def busy_beaver(n):
     def tape_callback(tape, tape_changed):
         if tape_changed:
-            print("".join(tape))
+            # print("".join(tape))
+            pass
 
     program = beaver_programs[n]
 
-    print("Running Busy Beaver with %d states." % n)
+    print("Running Busy Beaver with %d states." % n + 1)
     tm = TuringMachine(program, "a", "h", "0")
     tm.set_tape_callback(tape_callback)
     tm.run()
@@ -180,5 +181,5 @@ if __name__ == "__main__":
         print()
         usage()
 
-    busy_beaver(n)
+    busy_beaver(n - 1)
     # busy_beaver(0)
