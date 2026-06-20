@@ -129,7 +129,7 @@ class GameOfLife:
         """
         return self.getStates()
 
-    def update_grid_fast(self, grid):
+    def update_grid_fast(self):
         """
         TODO: [Part 1e - Fast Convolution]
         Use scipy.signal.convolve2d (or similar) to compute neighbor weights
@@ -142,7 +142,21 @@ class GameOfLife:
             np.ndarray: The next 2D grid of states.
         """
         # Student TODO: Implement fast 2D convolution method
-        pass
+
+        kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]], dtype=np.uint8)
+
+        if self.finite:
+            conv_grid = ndimage.convolve(self.grid, kernel, mode="constant")
+        else:
+            conv_grid = ndimage.convolve(self.grid, kernel, mode="wrap")
+
+        next_board = (
+            (self.grid == self.aliveValue)
+            & (conv_grid > self.aliveValue)
+            & (conv_grid < self.aliveValue * 4)
+        ) | ((self.grid == 0) & (conv_grid == 3 * self.aliveValue)).astype(np.uint8)
+
+        self.grid = next_board.astype(self.grid.dtype) * self.aliveValue
 
     def evolve(self):
         """
@@ -153,7 +167,7 @@ class GameOfLife:
         - Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
         """
         if self.fastMode:
-            self.grid = self.update_grid_fast(self.grid)
+            self.update_grid_fast()
             return
 
             # TODO: [Part 1a - Core Rules]
