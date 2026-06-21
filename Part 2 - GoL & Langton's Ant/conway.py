@@ -143,12 +143,12 @@ class GameOfLife:
         """
         # Student TODO: Implement fast 2D convolution method
 
-        kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]], dtype=np.uint8)
+        kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]], dtype=self.grid.dtype)
 
         if self.finite:
-            conv_grid = ndimage.convolve(self.grid, kernel, mode="constant")
+            conv_grid = ndimage.convolve(self.grid, self.neighborhood, mode="constant")
         else:
-            conv_grid = ndimage.convolve(self.grid, kernel, mode="wrap")
+            conv_grid = ndimage.convolve(self.grid, self.neighborhood, mode="wrap")
 
         next_board = (
             (self.grid == self.aliveValue)

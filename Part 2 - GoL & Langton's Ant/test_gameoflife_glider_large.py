@@ -12,9 +12,9 @@ VIEWPORT = (80, 336, 80, 336)
 
 def main():
     """Animate the large gun in pygame using a cropped viewport."""
-    life = conway.GameOfLife(N)
+    life = conway.GameOfLife(N,fastMode=True)
     # life.insertBlinker((0,0))
-    # life.insertGlider((0,0))
+    # life.insertGlider((100,100))
     # life.insertGliderGun((0,0))
     # life.insertFromFile("dragon spaceship.cells", (0,100))
     # life.insertFromFile("ak94 gun.cells", (100,100))
