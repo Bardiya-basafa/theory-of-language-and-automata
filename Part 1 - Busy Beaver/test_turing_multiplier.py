@@ -3,7 +3,6 @@ from turing_machine import TuringMachine
 from test_turing_machine_example1 import print_states
 
 # create the Turing machine
-# Transition dictionary
 transitions = {
     # start
     ("q0", "1"): ("get", "", "R"),
@@ -59,9 +58,19 @@ if __name__ == "__main__":
     # SHOULD ACCEPT
     run("110111")
     # outputs 111111
+    # 2 * 3 = 6
 
-    # # SHOULD ACCEPT
+    # SHOULD ACCEPT
     run("11101111")
-    # # outputs 111111111111
+    # outputs 111111111111
+    # 3 * 4 = 12
 
-    run("01111")
+    # SHOULD ACCEPT
+    run("101111")
+    # outputs 1111
+    # 1 * 4 = 4
+
+    # SHOULD ACCEPT
+    run("1101111")
+    # outputs 111111111111
+    # 2 * 4 = 8

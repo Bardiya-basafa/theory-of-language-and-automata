@@ -157,11 +157,12 @@ def busy_beaver(n):
 
     program = beaver_programs[n]
 
-    print("Running Busy Beaver with %d states." % n + 1)
+    print("Running Busy Beaver with %d states." % (n + 1))
     tm = TuringMachine(program, "a", "h", "0")
     tm.set_tape_callback(tape_callback)
     tm.run()
     print("Busy beaver finished in %d steps." % tm.moves)
+    print("Busy beaver wrote %d ones." % tm.tape.count("1"))
 
 
 def usage():
@@ -182,4 +183,3 @@ if __name__ == "__main__":
         usage()
 
     busy_beaver(n - 1)
-    # busy_beaver(0)

@@ -1,41 +1,9 @@
 # -*- coding: utf-8 -*-
 from turing_machine import TuringMachine
 
-# Python generators are useful for Turing machines because they invert control
-# over to the caller. They can generate an output stream lazily
-# Iterators allow lazy evaluation, only generating the next element of an iterable object when requested.
-# This is useful for very large data sets.
-#
-# EXAMPLE:
-# >>> x = (i ** 2 for i in range(1, 10))
-# >>> next(x)
-# 1
-# >>> next(x)
-# 4
-# >>> next(x)
-# 9
-#
-# This means that you could construct a Turing Machine lazily, repeatedly
-# ask for output with next, _only when needed_, or collect all its outputs
-# if needed
-#
-# EXAMPLE:
-# >>> x = (i ** 2 for i in range(1, 10))
-# >>> list(x)
-# [1, 4, 9, 16, 25, 36, 49, 64, 81
-# generator could write a function that
-#         potentially runs forever and it's up the the caller to decide how many
-#         steps are executed. We give the user control to execute us one step at a time. This
-#         is what Python generators are (partially) for. The yield expression
-#         suspends us and gives controll to the caller until he or she decides to
-#         resume our execution.
-# Because execution is done in a generator, it’s possible to have infinite executions
-#         but the acceptance checks are limited by the number of steps they are allowed to perform.
-
 # create the Turing machine
 bbeaver2 = TuringMachine(
     {
-        # TODO: Part III c) - Write your transition rules for the 2-card Busy Beaver program here
         ("a", "0"): ("b", "1", "R"),
         ("b", "0"): ("a", "1", "L"),
         ("a", "1"): ("b", "1", "L"),
@@ -48,7 +16,6 @@ bbeaver2 = TuringMachine(
 )
 bbeaver3 = TuringMachine(
     {
-        # TODO: Part III e) - Write your own transition rules for the 3-card Busy Beaver program here
         ("a", "0"): ("b", "1", "R"),
         ("a", "1"): ("c", "1", "L"),
         ("b", "1"): ("b", "1", "R"),
@@ -63,7 +30,6 @@ bbeaver3 = TuringMachine(
 )
 bbeaver4 = TuringMachine(
     {
-        # TODO: Part III e) - Write your own transition rules for the 4-card Busy Beaver program here
         ("a", "0"): ("b", "1", "R"),
         ("a", "1"): ("b", "1", "L"),
         ("b", "0"): ("a", "1", "L"),
@@ -80,7 +46,6 @@ bbeaver4 = TuringMachine(
 )
 bbeaver5 = TuringMachine(
     {
-        # TODO: Part III f) - Write your own transition rules for the 5-card Busy Beaver program here
         ("a", "0"): ("b", "1", "R"),
         ("a", "1"): ("c", "1", "L"),
         ("b", "0"): ("c", "1", "R"),

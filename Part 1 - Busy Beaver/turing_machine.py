@@ -1,37 +1,5 @@
 # -*- coding: utf-8 -*-
-"""A Turing machine simulator skeleton.
-
-Accepting '#'
-=============
-
->>> from turing_machine import TuringMachine
-
-Instantiate the machine with particular transitions.
-
->>> one_hash = TuringMachine(
-...     {
-...         ('q0', '#'): ('saw_#', '#', 'R'),
-...         ('saw_#', ''): ('qa', '', 'R'),
-...     }
-... )
-
-Check whether it accepts a string:
-
->>> one_hash.accepts('#')
-True
-
->>> one_hash.accepts('##')
-False
-
-Check whether it rejects a string:
-
->>> one_hash.rejects('#')
-False
-
->>> one_hash.rejects('##')
-True
-
-"""
+"""A Turing machine simulator skeleton."""
 
 import logging
 from itertools import islice
@@ -65,14 +33,12 @@ class TuringMachine:
         reject_state="qr",
         blank_symbol="",
     ):
-        # TODO: Implement the constructor. Initialize transitions, start_state, accept_state,
-        # reject_state, blank_symbol, and any other helpful structures.
+        # setting turing machine parameters
         self.transitions = transitions
         self.start_state = start_state
         self.accept_state = accept_state
         self.reject_state = reject_state
         self.blank_symbol = blank_symbol
-        pass
 
     def run(self, input_):
         """Execute the Turing machine for a particular input.
@@ -92,16 +58,13 @@ class TuringMachine:
         - 'right_hand_side': list of symbols on the right hand side of the current position.
 
         """
-        # TODO: Implement the simulator loop as a Python generator.
-        # 1. Initialize the tape using two lists (left_hand_side and right_hand_side) and the current symbol.
-        # 2. Yield the current step (action, configuration).
-        # 3. Read transitions and update state, write symbols, and move the head ('L' or 'R').
-        # 4. Handle tape expansion dynamically for both left and right directions (double-sided infinite tape).
-        # 5. Log a warning using logging.warning() if the singly-infinite tape boundary is crossed before Part III.
+        # check if the input is str, if it is convert it to list
         if isinstance(input_, str):
             tape = list(input_)
         else:
             tape = input_
+
+        # cacluating left and right tape of the current symbol using two lists (left list is invert)
         left = []
         if tape:
             symbol = tape[0]
@@ -111,7 +74,7 @@ class TuringMachine:
             right = []
 
         current_state = self.start_state
-
+        # returning the initial state
         yield (
             None,
             {
@@ -174,6 +137,7 @@ class TuringMachine:
 
             # move head
             if direction == "R":
+                # add the symbol to left handside tape and go right
                 left.insert(0, symbol)
                 if right:
                     symbol = right[0]
@@ -182,6 +146,7 @@ class TuringMachine:
                     symbol = self.blank_symbol
 
             elif direction == "L":
+                # add the symbol to right handside tape and go left
                 right.insert(0, symbol)
                 if left:
                     symbol = left[0]
@@ -190,6 +155,7 @@ class TuringMachine:
                     symbol = self.blank_symbol
 
             else:
+                # niether of R an L so it is bad input
                 yield (
                     "Bad Input",
                     {
@@ -223,11 +189,10 @@ class TuringMachine:
         :return: True if the machine halts in accept_state, False if it rejects,
                  or None if the step limit is reached without halting.
         """
-        # TODO: Run the generator up to step_limit and check the action of the final yielded state.
-        # Remember to log a warning if the step_limit is reached without halting.
-
+        # creating the turing generator
         turing_gen = self.run(input_)
 
+        # going through the step limits until machine halt
         for _ in range(step_limit):
             try:
                 action, conf = next(turing_gen)
@@ -237,7 +202,7 @@ class TuringMachine:
                     return False
             except StopIteration:
                 break
-
+        # logging that the machine did not halt
         logging.warning(
             "the step limit has reached and input not accepted nor rejected"
         )
@@ -249,7 +214,7 @@ class TuringMachine:
         :param input_: the input string or list.
         :return: True if the machine rejects the string, False if it accepts.
         """
-        # TODO: Determine rejection by checking if accepts() returns False.
+        # just returning the not of the accept result
         result = self.accepts(input_=input_)
         if result is None:
             return None
@@ -263,8 +228,6 @@ class TuringMachine:
         :param step_limit: the maximum number of steps to output.
         :param colored: True to output colored boundaries in terminal.
         """
-        # TODO: Loop over the steps yielded by run() up to step_limit and print the tape configuration.
-        # E.g., print the state and the tape with the head highlighted in brackets like: left[symbol]right
         halted = False
         for step, (action, config) in enumerate(islice(self.run(input_), step_limit)):
 
@@ -277,8 +240,9 @@ class TuringMachine:
             # make the left and right string (left should be revered)
             left = "".join(reversed(left))
             right = "".join(right)
-
+            # construct the tape
             if colored:
+                # adding color to the current symbol
                 tape = f"{left}\033[91m{symbol}\033[0m{right}"
             else:
                 tape = f"{left}{symbol}{right}"
@@ -290,5 +254,6 @@ class TuringMachine:
             else:
                 halted = True
                 return
+        # logging that machine did not halt
         if not halted:
             logging.warning("Debug stopped after reaching the step limit.")
