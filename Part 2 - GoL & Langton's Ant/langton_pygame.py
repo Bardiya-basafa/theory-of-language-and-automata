@@ -13,7 +13,6 @@ import pygame
 
 from langton import LangtonsAnt
 
-
 DEFAULT_RULES = {
     0: (1, "R"),
     1: (0, "L"),
@@ -25,6 +24,30 @@ MULTI_COLOR_RULES = {
     2: (3, "R"),
     3: (0, "L"),
 }
+
+TRIANGLE_RULES = {
+    0: (1, "L"),
+    1: (2, "L"),
+    2: (0, "R"),
+}
+
+ANT_RRLDDDULRRLLLL_RULES = {
+    0: (1, "R"),
+    1: (2, "R"),
+    2: (3, "L"),
+    3: (4, "D"),
+    4: (5, "D"),
+    5: (6, "D"),
+    6: (7, "U"),
+    7: (8, "L"),
+    8: (9, "R"),
+    9: (10, "R"),
+    10: (11, "L"),
+    11: (12, "L"),
+    12: (13, "L"),
+    13: (0, "L"),
+}
+
 
 PALETTE = [
     (0, 0, 0),
@@ -70,7 +93,9 @@ def run_visualizer(ant, cell_scale=6, fps=60, max_steps=None, title="Langton's A
     pygame.init()
 
     grid = ant.get_states()
-    screen = pygame.display.set_mode((grid.shape[1] * cell_scale, grid.shape[0] * cell_scale))
+    screen = pygame.display.set_mode(
+        (grid.shape[1] * cell_scale, grid.shape[0] * cell_scale)
+    )
     pygame.display.set_caption(title)
     clock = pygame.time.Clock()
 
@@ -81,7 +106,9 @@ def run_visualizer(ant, cell_scale=6, fps=60, max_steps=None, title="Langton's A
             if event.type == pygame.QUIT:
                 finished = True
 
-        surface = build_surface(grid, cell_scale, ant_position=ant.get_current_position())
+        surface = build_surface(
+            grid, cell_scale, ant_position=ant.get_current_position()
+        )
         screen.blit(surface, (0, 0))
         pygame.display.flip()
 
@@ -102,9 +129,13 @@ def parse_args():
     parser.add_argument("--size", type=int, default=200, help="Grid size (NxN)")
     parser.add_argument("--row", type=int, default=None, help="Starting row")
     parser.add_argument("--col", type=int, default=None, help="Starting column")
-    parser.add_argument("--cell-scale", type=int, default=6, help="Pixel scale per cell")
+    parser.add_argument(
+        "--cell-scale", type=int, default=6, help="Pixel scale per cell"
+    )
     parser.add_argument("--fps", type=int, default=60, help="Frames per second")
-    parser.add_argument("--steps", type=int, default=None, help="Maximum simulation steps")
+    parser.add_argument(
+        "--steps", type=int, default=None, help="Maximum simulation steps"
+    )
     parser.add_argument(
         "--multi-color",
         action="store_true",
@@ -118,7 +149,7 @@ def main():
     args = parse_args()
     start_row = args.row if args.row is not None else args.size // 2
     start_col = args.col if args.col is not None else args.size // 2
-    rules = MULTI_COLOR_RULES if args.multi_color else DEFAULT_RULES
+    rules = MULTI_COLOR_RULES if args.multi_color else ANT_RRLDDDULRRLLLL_RULES
 
     ant = LangtonsAnt(args.size, (start_row, start_col), rules)
     run_visualizer(

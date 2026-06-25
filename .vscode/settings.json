@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./Part 2 - GoL & Langton's Ant/pygame"
+    ]
+}

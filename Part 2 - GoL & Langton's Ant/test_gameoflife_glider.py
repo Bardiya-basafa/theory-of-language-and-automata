@@ -5,23 +5,27 @@ Game of life script with animated evolution
 import conway
 from pygame_viewer import run_pygame_life
 
-N = 64
-CELL_SCALE = 10
+N = 200
+CELL_SCALE = 8
 
 
 def main():
     """Animate the vacuum gun in pygame."""
     life = conway.GameOfLife(N, fastMode=True)
-    # life.insertBlinker((0, 0))
-    life.insertGlider((0,0))
+    # life.insertBlinker((40, 40))
+    # life.insertGlider((40,40))
+    # life.insertGliderP60((40, 40), rotate=270)
+    # life.insertBlock((10,10))
+    # life.insertEater((10,10))
+    # life.insertReflector((10,10))
     # life.insertGliderGun((0,0))
-    # life.insertFromFile("snail spaceship.cells", (0,20))
-    # life.insertFromFile("dragon spaceship.cells", (0, 30))
-    # life.insertFromFile("ak94 gun.cells", (0,0))
-    # life.insertFromFile("vacuumgun gun.cells", (0,0))
-    # life.insertFromFile("test.rle", (0,0))
-    # life.insertFromFile("pulsar.rle", (0, 0))
-    # life.insertFromFile("pulsar.cells", (0,0))
+    # life.insertFromFile("pat-snail spaceship.cells", (0, 20))
+    # life.insertFromFile("pat-dragon spaceship.cells", (10, 30))
+    # life.insertFromFile("pat-ak94 gun.cells", (0,0))
+    # life.insertFromFile("pat-vacuumgun gun.cells", (0,0))
+    # life.insertFromFile("pat-test.rle", (0,0))
+    # life.insertFromFile("pat-pulsar.rle", (50, 50))
+    # life.insertFromFile("pat-pulsar.cells", (50,50))
 
     # In a cellular automaton, a gun is a pattern with a main part that repeats periodically, like an oscillator,
     # and that also periodically emits spaceships. but here the gun is not emit periodically and the left end did not work.

@@ -8,7 +8,6 @@ import numpy as np
 
 class LangtonsAnt:
     """
-    TODO: [Part 2 - Langton's Ant]
     Create the LangtonsAnt class.
 
     Instruct students to:
@@ -31,8 +30,8 @@ class LangtonsAnt:
             rules (dict): Dictionary defining transition rules.
                           Format: {current_color: (next_color, turn_direction)}
         """
-        # Student TODO: Implement initialization
         self.grid = np.zeros((N, N), np.uint8)
+        self.N = N
         self.ant_position = ant_position
         self.rules = rules
         self.current_dir = "U"
@@ -44,7 +43,6 @@ class LangtonsAnt:
         Returns:
             np.ndarray: The NxN cellular grid.
         """
-        # Student TODO: Return grid state
         return self.grid
 
     def get_current_position(self):
@@ -54,19 +52,18 @@ class LangtonsAnt:
         Returns:
             tuple: Current coordinates of the ant.
         """
-        # Student TODO: Return current position
         return self.ant_position
 
     def step(self):
         """
         Perform a single simulation step following the ruleset.
         """
-        # Student TODO: Implement the ant's movement and cell state updates
         r = self.ant_position[0]
         c = self.ant_position[1]
         color = self.grid[r, c]
         next_color, directions = self.rules[color]
         self.grid[r, c] = next_color
+        # calculating the next postintion using current position
         for dir in list(directions):
             if dir == "R":
                 if self.current_dir == "U":
@@ -102,7 +99,7 @@ class LangtonsAnt:
                     r += 1
                     self.current_dir = "D"
 
-        self.ant_position = (r,c)
+        self.ant_position = (r % self.N, c % self.N)
 
     def update(self):
         """

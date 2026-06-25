@@ -13,7 +13,7 @@ import re
 def rle_parse(filepath):
     with open(filepath, "r") as f:
         lines = f.readlines()
-
+        # construct the pattern lines and skip comments
         pattern_lines = []
         for line in lines:
             line = line.strip()
@@ -21,7 +21,7 @@ def rle_parse(filepath):
                 pattern_lines.append(line)
 
         header = pattern_lines[0]
-
+        # get the x and y value for width and height
         width = int(re.search(r"x\s*=\s*(\d+)", header).group(1))
         height = int(re.search(r"y\s*=\s*(\d+)", header).group(1))
 
@@ -43,9 +43,11 @@ def rle_parse(filepath):
                         c += 1
                 elif char == "b":
                     c += count
+                # end of line
                 elif char == "$":
                     r += count
                     c = 0
+                # end of rle file
                 elif char == "!":
                     break
 
@@ -54,7 +56,6 @@ def rle_parse(filepath):
 
 def parse_pattern(filepath: str, aliveValue, deadValue):
     """
-    TODO: [Part 1d - RLE/Plaintext Parser]
     Write a parser for Run Length Encoded (RLE) or Plaintext (.cells) patterns
     so grids larger than 20x20 can be loaded.
 
@@ -64,20 +65,22 @@ def parse_pattern(filepath: str, aliveValue, deadValue):
     Returns:
         tuple: (width, height, list of (r, c) offsets of live cells)
     """
-    # Student TODO: Implement parser here
-    # plain text parser
+
+    # check if it is rle file then parse rle file
     if filepath.endswith(".rle"):
         return rle_parse(filepath)
 
+    # open file
     with open(filepath, "r") as f:
         lines = f.readlines()
-
+        # construct the pattern lines
         pattern_lines = []
         for line in lines:
             line = line.strip()
             if line and not line.startswith("!"):
                 pattern_lines.append(line)
 
+        # find the withd of the pattern
         max_withd = max(len(line) for line in pattern_lines)
 
         pattern = []
@@ -85,11 +88,12 @@ def parse_pattern(filepath: str, aliveValue, deadValue):
         for line in pattern_lines:
             row = []
             for char in line:
+                # add alive nodes
                 if char == "O":
                     row.append(aliveValue)
                 else:
                     row.append(deadValue)
-
+            # feel the row if it is empty in at end
             row.extend([deadValue] * (max_withd - len(row)))
             pattern.append(row)
         live_cells = []
@@ -131,7 +135,6 @@ class GameOfLife:
 
     def update_grid_fast(self):
         """
-        TODO: [Part 1e - Fast Convolution]
         Use scipy.signal.convolve2d (or similar) to compute neighbor weights
         rapidly for large grids (N > 1024).
 
@@ -141,15 +144,13 @@ class GameOfLife:
         Returns:
             np.ndarray: The next 2D grid of states.
         """
-        # Student TODO: Implement fast 2D convolution method
-
-        kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]], dtype=self.grid.dtype)
 
         if self.finite:
             conv_grid = ndimage.convolve(self.grid, self.neighborhood, mode="constant")
         else:
             conv_grid = ndimage.convolve(self.grid, self.neighborhood, mode="wrap")
 
+        # use the gol logic to cacluate next alive cells
         next_board = (
             (self.grid == self.aliveValue)
             & (conv_grid > self.aliveValue)
@@ -170,12 +171,6 @@ class GameOfLife:
             self.update_grid_fast()
             return
 
-            # TODO: [Part 1a - Core Rules]
-            # Remove the transition logic and implement the 4 standard GoL rules
-            # (Underpopulation, Survival, Overpopulation, Reproduction) by iterating
-            # through the cells cell-by-cell. Handle self.finite wrapping appropriately.
-
-            # Student TODO: Implement slow update cell-by-cell logic here
         new_grid = self.grid.copy()
 
         for i in range(self.rows):
@@ -284,15 +279,70 @@ class GameOfLife:
         self.grid[r + 3, c + 36] = val
         self.grid[r + 4, c + 36] = val
 
-    def insertFromFile(self, filename, index=((0, 0))):
+    def insertEater(self, index=(0, 0)):
+        """Standard eater 1 (destroys gliders)"""
+        self.insertFromFile("pat-eater.cells", index=index)
+
+    def insertReflector(self, index=(0, 0), rotate=0):
+        """
+        Simple 90° reflector (boat-based)
+        Works for demonstration wiring.
+        """
+        self.insertFromFile("pat-reflector.cells", index=index, rotate=rotate)
+
+    def insertBlock(self, index=(0, 0)):
+        g = self.grid
+        v = self.aliveValue
+
+        r, c = index
+
+        g[r, c] = v
+        g[r, c + 1] = v
+        g[r + 1, c] = v
+        g[r + 1, c + 1] = v
+
+        self.grid = g
+
+    def insertGliderP60(self, index=(0, 0), rotate=0):
+        self.insertFromFile("pat-glider gunp60.cells", index=index, rotate=rotate)
+
+    def insertFromFile(self, filename, index=((0, 0)), rotate=0):
         """
         Insert cells from pattern file using parse_pattern
         """
+
         width, height, live_cells = parse_pattern(
             filename, self.aliveValue, self.deadValue
         )
+
+        # build matrix
+        matrix = [[0 for _ in range(width)] for _ in range(height)]
+
         for r, c in live_cells:
-            target_r = index[0] + r
-            target_c = index[1] + c
-            if 0 <= target_r < self.rows and 0 <= target_c < self.cols:
-                self.grid[target_r, target_c] = self.aliveValue
+            matrix[r][c] = 1
+
+        # rotate matrix
+        def rotate_matrix(mat):
+            n = len(mat)
+            m = len(mat[0])
+            rotated = [[0] * n for _ in range(m)]
+
+            for j in range(n):
+                for i in range(m):
+                    rotated[i][j] = mat[j][m - 1 - i]
+
+            return rotated
+
+        rotations = (rotate // 90) % 4
+        for _ in range(rotations):
+            matrix = rotate_matrix(matrix)
+
+        # insert rotated pattern
+        for r in range(len(matrix)):
+            for c in range(len(matrix[0])):
+                if matrix[r][c] == 1:
+                    target_r = index[0] + r
+                    target_c = index[1] + c
+
+                    if 0 <= target_r < self.rows and 0 <= target_c < self.cols:
+                        self.grid[target_r, target_c] = self.aliveValue
