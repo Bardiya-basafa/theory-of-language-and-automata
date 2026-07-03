@@ -48,6 +48,40 @@ ANT_RRLDDDULRRLLLL_RULES = {
     13: (0, "L"),
 }
 
+SYMMETRIC_STAR_RULES = {
+    0: (1, "R"),
+    1: (2, "R"),
+    2: (3, "L"),
+    3: (4, "L"),
+    4: (5, "L"),
+    5: (6, "R"),
+    6: (7, "L"),
+    7: (8, "L"),
+    8: (9, "L"),
+    9: (0, "R"),
+}
+
+SYMMETRIC_PYRAMID_RULES = {
+    0: (1, "R"),
+    1: (2, "L"),
+    2: (3, "L"),
+    3: (4, "R"),
+    4: (5, "L"),
+    5: (6, "L"),
+    6: (0, "R"),
+}
+
+CRYSTAL_GRID_RULES = {
+    0: (1, "L"),
+    1: (2, "L"),
+    2: (3, "R"),
+    3: (4, "R"),
+    4: (5, "R"),
+    5: (6, "L"),
+    6: (7, "R"),
+    7: (0, "L"),
+}
+
 
 PALETTE = [
     (0, 0, 0),
@@ -132,7 +166,7 @@ def parse_args():
     parser.add_argument(
         "--cell-scale", type=int, default=6, help="Pixel scale per cell"
     )
-    parser.add_argument("--fps", type=int, default=60, help="Frames per second")
+    parser.add_argument("--fps", type=int, default=1000, help="Frames per second")
     parser.add_argument(
         "--steps", type=int, default=None, help="Maximum simulation steps"
     )
@@ -149,7 +183,7 @@ def main():
     args = parse_args()
     start_row = args.row if args.row is not None else args.size // 2
     start_col = args.col if args.col is not None else args.size // 2
-    rules = MULTI_COLOR_RULES if args.multi_color else ANT_RRLDDDULRRLLLL_RULES
+    rules = MULTI_COLOR_RULES if args.multi_color else SYMMETRIC_STAR_RULES
 
     ant = LangtonsAnt(args.size, (start_row, start_col), rules)
     run_visualizer(

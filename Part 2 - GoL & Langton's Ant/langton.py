@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Langton's Ant Student Template Module.
+Langton's Ant with Multi-color Rulesets support.
 """
 
 import numpy as np
@@ -8,16 +8,7 @@ import numpy as np
 
 class LangtonsAnt:
     """
-    Create the LangtonsAnt class.
-
-    Instruct students to:
-    1. Implement the core rules:
-       - If on a white square, toggle the color of the square and turn 90 degrees clockwise ('R'), then move forward one unit.
-       - If on a black square, toggle the color of the square and turn 90 degrees counter-clockwise ('L'), then move forward one unit.
-    2. Extend it to handle multi-color states (representing rulesets like RLR, LLRR, LRRRRRLLR, etc.).
-       - A ruleset dictionary maps: {current_color: (next_color, turn_direction)}
-       - Where turn_direction is 'R' or 'L'.
-    3. Ensure wrapping at the boundaries (toroidal grid).
+    Enhanced Langton's Ant supporting multi-color rulesets (e.g., "RLR", "LLRR", "LRRRRRLLR").
     """
 
     def __init__(self, N, ant_position, rules):
@@ -27,82 +18,73 @@ class LangtonsAnt:
         Args:
             N (int): The grid size (NxN).
             ant_position (tuple): Starting coordinate of the ant as (r, c).
-            rules (dict): Dictionary defining transition rules.
-                          Format: {current_color: (next_color, turn_direction)}
+            rules (dict or str): Dictionary mapping {color: (next_color, 'R'/'L')}
+                                 OR a ruleset string like "RLR", "LLRR", "LARRRRRLLR".
         """
         self.grid = np.zeros((N, N), np.uint8)
         self.N = N
         self.ant_position = ant_position
-        self.rules = rules
-        self.current_dir = "U"
+        self.current_dir = "U"  # Possible directions: 'U', 'R', 'D', 'L'
+
+        # Convert string ruleset to the standardized transition dictionary
+        if isinstance(rules, str):
+            self.rules = {}
+            num_colors = len(rules)
+            for i, turn in enumerate(rules):
+                next_color = (i + 1) % num_colors
+                self.rules[i] = (next_color, turn.upper())
+        else:
+            self.rules = rules
 
     def get_states(self):
         """
         Returns the current state grid of the cells.
-
-        Returns:
-            np.ndarray: The NxN cellular grid.
         """
         return self.grid
 
     def get_current_position(self):
         """
         Returns the ant's current position as a tuple (r, c).
-
-        Returns:
-            tuple: Current coordinates of the ant.
         """
         return self.ant_position
 
     def step(self):
         """
-        Perform a single simulation step following the ruleset.
+        Perform a single simulation step following the multi-color ruleset.
         """
-        r = self.ant_position[0]
-        c = self.ant_position[1]
-        color = self.grid[r, c]
-        next_color, directions = self.rules[color]
+        r, c = self.ant_position
+        current_color = self.grid[r, c]
+
+        # Retrieve next color state and turn direction
+        next_color, turn_direction = self.rules[current_color]
+
+        # Toggle/update color of the current square
         self.grid[r, c] = next_color
-        # calculating the next postintion using current position
-        for dir in list(directions):
-            if dir == "R":
-                if self.current_dir == "U":
-                    c += 1
-                    self.current_dir = "R"
 
-                elif self.current_dir == "R":
-                    r += 1
-                    self.current_dir = "D"
+        # 1. Update ant orientation (turn R or L)
+        dirs_clockwise = ["U", "R", "D", "L"]
+        curr_idx = dirs_clockwise.index(self.current_dir)
 
-                elif self.current_dir == "D":
-                    c -= 1
-                    self.current_dir = "L"
+        if turn_direction == "R":
+            self.current_dir = dirs_clockwise[(curr_idx + 1) % 4]
+        elif turn_direction == "L":
+            self.current_dir = dirs_clockwise[(curr_idx - 1) % 4]
 
-                elif self.current_dir == "L":
-                    r -= 1
-                    self.current_dir = "U"
+        # 2. Move forward one unit in the new direction
+        if self.current_dir == "U":
+            r -= 1
+        elif self.current_dir == "D":
+            r += 1
+        elif self.current_dir == "R":
+            c += 1
+        elif self.current_dir == "L":
+            c -= 1
 
-            elif dir == "L":
-                if self.current_dir == "U":
-                    c -= 1
-                    self.current_dir = "L"
-
-                elif self.current_dir == "R":
-                    r -= 1
-                    self.current_dir = "U"
-
-                elif self.current_dir == "D":
-                    c += 1
-                    self.current_dir = "R"
-
-                elif self.current_dir == "L":
-                    r += 1
-                    self.current_dir = "D"
-
+        # Apply toroidal wrapping
         self.ant_position = (r % self.N, c % self.N)
 
     def update(self):
         """
-        Alias for step() to support standard animation.
+        Alias for step() to support standard animation/engine.
         """
         self.step()

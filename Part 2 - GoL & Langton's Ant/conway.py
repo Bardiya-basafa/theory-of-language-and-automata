@@ -1,35 +1,44 @@
+# -*- coding: utf-8 -*-
 """
 The Game of Life (GoL) module named in honour of John Conway
 
 This module defines the classes required for the GoL simulation.
-
 """
 
 import numpy as np
-from scipy import signal, ndimage
+from scipy import ndimage
 import re
 
 
 def rle_parse(filepath):
     with open(filepath, "r") as f:
         lines = f.readlines()
-        # construct the pattern lines and skip comments
+
         pattern_lines = []
         for line in lines:
             line = line.strip()
-            if line and (not line.startswith("!") and not line.startswith("#")):
+            if line and not line.startswith("#") and not line.startswith("!"):
                 pattern_lines.append(line)
 
-        header = pattern_lines[0]
-        # get the x and y value for width and height
-        width = int(re.search(r"x\s*=\s*(\d+)", header).group(1))
-        height = int(re.search(r"y\s*=\s*(\d+)", header).group(1))
+        if not pattern_lines:
+            raise ValueError("Empty or invalid RLE file.")
 
-        data = "".join(pattern_lines[1:]).strip()
+        header = pattern_lines[0]
+        width_match = re.search(r"x\s*=\s*(\d+)", header)
+        height_match = re.search(r"y\s*=\s*(\d+)", header)
+
+        if not width_match or not height_match:
+            raise ValueError("Invalid RLE header: missing x or y dimensions.")
+
+        width = int(width_match.group(1))
+        height = int(height_match.group(1))
+
+        data = "".join(pattern_lines[1:]).replace(" ", "").strip()
         live_cells = []
         r = 0
         c = 0
         run_count = ""
+
         for char in data:
             if char.isdigit():
                 run_count += char
@@ -43,66 +52,44 @@ def rle_parse(filepath):
                         c += 1
                 elif char == "b":
                     c += count
-                # end of line
                 elif char == "$":
                     r += count
                     c = 0
-                # end of rle file
                 elif char == "!":
                     break
 
-    return (width, height, live_cells)
+        return (width, height, live_cells)
 
 
 def parse_pattern(filepath: str, aliveValue, deadValue):
     """
-    Write a parser for Run Length Encoded (RLE) or Plaintext (.cells) patterns
-    so grids larger than 20x20 can be loaded.
-
-    Args:
-        filepath (str): Path to the pattern file.
-
-    Returns:
-        tuple: (width, height, list of (r, c) offsets of live cells)
+    Parses RLE (.rle) or Plaintext (.cells) files.
     """
-
-    # check if it is rle file then parse rle file
     if filepath.endswith(".rle"):
         return rle_parse(filepath)
 
-    # open file
     with open(filepath, "r") as f:
         lines = f.readlines()
-        # construct the pattern lines
+
         pattern_lines = []
         for line in lines:
             line = line.strip()
             if line and not line.startswith("!"):
                 pattern_lines.append(line)
 
-        # find the withd of the pattern
-        max_withd = max(len(line) for line in pattern_lines)
+        if not pattern_lines:
+            return (0, 0, [])
 
-        pattern = []
-        i = 0
-        for line in pattern_lines:
-            row = []
-            for char in line:
-                # add alive nodes
-                if char == "O":
-                    row.append(aliveValue)
-                else:
-                    row.append(deadValue)
-            # feel the row if it is empty in at end
-            row.extend([deadValue] * (max_withd - len(row)))
-            pattern.append(row)
+        max_width = max(len(line) for line in pattern_lines)
+        height = len(pattern_lines)
         live_cells = []
-        for i in range(len(pattern)):
-            for j in range(max_withd):
-                if pattern[i][j] == aliveValue:
-                    live_cells.append((i, j))
 
-        return (max_withd, len(pattern_lines), live_cells)
+        for r, line in enumerate(pattern_lines):
+            for c, char in enumerate(line):
+                if char == "O":
+                    live_cells.append((r, c))
+
+        return (max_width, height, live_cells)
 
 
 class GameOfLife:
@@ -118,88 +105,56 @@ class GameOfLife:
         self.fastMode = fastMode
         self.aliveValue = 1
         self.deadValue = 0
-        self.rows = N  # use for slow implementation of evolve
-        self.cols = N  # use for slow implementation of evolve
+        self.rows = N
+        self.cols = N
 
     def getStates(self):
-        """
-        Returns the current states of the cells
-        """
         return self.grid
 
     def getGrid(self):
-        """
-        Same as getStates()
-        """
         return self.getStates()
 
     def update_grid_fast(self):
-        """
-        Use scipy.signal.convolve2d (or similar) to compute neighbor weights
-        rapidly for large grids (N > 1024).
-
-        Args:
-            grid (np.ndarray): The current 2D grid of states.
-
-        Returns:
-            np.ndarray: The next 2D grid of states.
-        """
-
         if self.finite:
-            conv_grid = ndimage.convolve(self.grid, self.neighborhood, mode="constant")
+            conv_grid = ndimage.convolve(
+                self.grid, self.neighborhood, mode="constant", cval=0
+            )
         else:
             conv_grid = ndimage.convolve(self.grid, self.neighborhood, mode="wrap")
 
-        # use the gol logic to cacluate next alive cells
         next_board = (
-            (self.grid == self.aliveValue)
-            & (conv_grid > self.aliveValue)
-            & (conv_grid < self.aliveValue * 4)
-        ) | ((self.grid == 0) & (conv_grid == 3 * self.aliveValue)).astype(np.uint8)
+            (self.grid == self.aliveValue) & (conv_grid >= 2) & (conv_grid <= 3)
+        ) | ((self.grid == self.deadValue) & (conv_grid == 3))
 
         self.grid = next_board.astype(self.grid.dtype) * self.aliveValue
 
     def evolve(self):
-        """
-        Given the current states of the cells, apply the GoL rules:
-        - Any live cell with fewer than two live neighbors dies, as if by underpopulation.
-        - Any live cell with two or three live neighbors lives on to the next generation.
-        - Any live cell with more than three live neighbors dies, as if by overpopulation.
-        - Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
-        """
         if self.fastMode:
             self.update_grid_fast()
             return
 
         new_grid = self.grid.copy()
-
         for i in range(self.rows):
             for j in range(self.cols):
-
                 alive_neighbors = 0
-
                 for r in range(-1, 2):
                     for c in range(-1, 2):
-
                         if r == 0 and c == 0:
-                            continue  # skip the cell itself
+                            continue
 
                         ni = i + r
                         nj = j + c
 
                         if self.finite:
-                            # skip neighbors outside the grid
                             if ni < 0 or ni >= self.rows or nj < 0 or nj >= self.cols:
                                 continue
                         else:
-                            # wrap around (toroidal grid)
                             ni %= self.rows
                             nj %= self.cols
 
                         if self.grid[ni, nj] == self.aliveValue:
                             alive_neighbors += 1
 
-                # Apply GoL rules
                 if self.grid[i, j] == self.aliveValue:
                     if alive_neighbors < 2 or alive_neighbors > 3:
                         new_grid[i, j] = self.deadValue
@@ -214,17 +169,11 @@ class GameOfLife:
         self.grid = new_grid
 
     def insertBlinker(self, index=(0, 0)):
-        """
-        Insert a blinker oscillator construct at the index position
-        """
         self.grid[index[0], index[1] + 1] = self.aliveValue
         self.grid[index[0] + 1, index[1] + 1] = self.aliveValue
         self.grid[index[0] + 2, index[1] + 1] = self.aliveValue
 
     def insertGlider(self, index=(0, 0)):
-        """
-        Insert a glider construct at the index position
-        """
         self.grid[index[0], index[1] + 1] = self.aliveValue
         self.grid[index[0] + 1, index[1] + 2] = self.aliveValue
         self.grid[index[0] + 2, index[1]] = self.aliveValue
@@ -235,13 +184,13 @@ class GameOfLife:
         r, c = index
         val = self.aliveValue
 
-        # 1. Left Square (Block)
+        # Left Square (Block)
         self.grid[r + 5, c + 1] = val
         self.grid[r + 5, c + 2] = val
         self.grid[r + 6, c + 1] = val
         self.grid[r + 6, c + 2] = val
 
-        # 2. Left "Circle" / Shuttle Part
+        # Left Shuttle
         self.grid[r + 5, c + 11] = val
         self.grid[r + 6, c + 11] = val
         self.grid[r + 7, c + 11] = val
@@ -259,7 +208,7 @@ class GameOfLife:
         self.grid[r + 7, c + 17] = val
         self.grid[r + 6, c + 18] = val
 
-        # 3. Right "Circle" / Shuttle Part
+        # Right Shuttle
         self.grid[r + 3, c + 21] = val
         self.grid[r + 4, c + 21] = val
         self.grid[r + 5, c + 21] = val
@@ -273,76 +222,60 @@ class GameOfLife:
         self.grid[r + 6, c + 25] = val
         self.grid[r + 7, c + 25] = val
 
-        # 4. Right Square (Block)
+        # Right Square (Block)
         self.grid[r + 3, c + 35] = val
         self.grid[r + 4, c + 35] = val
         self.grid[r + 3, c + 36] = val
         self.grid[r + 4, c + 36] = val
 
     def insertEater(self, index=(0, 0)):
-        """Standard eater 1 (destroys gliders)"""
         self.insertFromFile("pat-eater.cells", index=index)
 
     def insertReflector(self, index=(0, 0), rotate=0):
-        """
-        Simple 90° reflector (boat-based)
-        Works for demonstration wiring.
-        """
         self.insertFromFile("pat-reflector.cells", index=index, rotate=rotate)
 
     def insertBlock(self, index=(0, 0)):
-        g = self.grid
-        v = self.aliveValue
-
         r, c = index
-
-        g[r, c] = v
-        g[r, c + 1] = v
-        g[r + 1, c] = v
-        g[r + 1, c + 1] = v
-
-        self.grid = g
+        self.grid[r, c] = self.aliveValue
+        self.grid[r, c + 1] = self.aliveValue
+        self.grid[r + 1, c] = self.aliveValue
+        self.grid[r + 1, c + 1] = self.aliveValue
 
     def insertGliderP60(self, index=(0, 0), rotate=0):
         self.insertFromFile("pat-glider gunp60.cells", index=index, rotate=rotate)
 
-    def insertFromFile(self, filename, index=((0, 0)), rotate=0):
+    def insertFromFile(self, filename, index=(0, 0), rotate=0):
         """
-        Insert cells from pattern file using parse_pattern
+        Loads, rotates (by 0, 90, 180, 270 deg clockwise), and inserts a pattern.
         """
-
         width, height, live_cells = parse_pattern(
             filename, self.aliveValue, self.deadValue
         )
 
-        # build matrix
-        matrix = [[0 for _ in range(width)] for _ in range(height)]
+        if not live_cells:
+            return
 
+        matrix = [[0 for _ in range(width)] for _ in range(height)]
         for r, c in live_cells:
             matrix[r][c] = 1
 
-        # rotate matrix
         def rotate_matrix(mat):
             n = len(mat)
             m = len(mat[0])
             rotated = [[0] * n for _ in range(m)]
-
             for j in range(n):
                 for i in range(m):
                     rotated[i][j] = mat[j][m - 1 - i]
-
             return rotated
 
         rotations = (rotate // 90) % 4
         for _ in range(rotations):
             matrix = rotate_matrix(matrix)
 
-        # insert rotated pattern
         for r in range(len(matrix)):
             for c in range(len(matrix[0])):
                 if matrix[r][c] == 1:
                     target_r = index[0] + r
                     target_c = index[1] + c
-
                     if 0 <= target_r < self.rows and 0 <= target_c < self.cols:
                         self.grid[target_r, target_c] = self.aliveValue

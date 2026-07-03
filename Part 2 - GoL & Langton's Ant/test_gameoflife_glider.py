@@ -12,7 +12,7 @@ CELL_SCALE = 8
 def main():
     """Animate the vacuum gun in pygame."""
     life = conway.GameOfLife(N, fastMode=True)
-    # life.insertBlinker((40, 40))
+    life.insertBlinker((40, 40))
     # life.insertGlider((40,40))
     # life.insertGliderP60((40, 40), rotate=270)
     # life.insertBlock((10,10))
@@ -23,9 +23,9 @@ def main():
     # life.insertFromFile("pat-dragon spaceship.cells", (10, 30))
     # life.insertFromFile("pat-ak94 gun.cells", (0,0))
     # life.insertFromFile("pat-vacuumgun gun.cells", (0,0))
-    # life.insertFromFile("pat-test.rle", (0,0))
-    # life.insertFromFile("pat-pulsar.rle", (50, 50))
-    # life.insertFromFile("pat-pulsar.cells", (50,50))
+    # life.insertFromFile("pat-rle-gun.rle", (10, 10))
+    # life.insertFromFile("pat-rle-puffer.rle", (50, 50))
+    # life.insertFromFile("pat-rle-ship.rle", (50,50))
 
     # In a cellular automaton, a gun is a pattern with a main part that repeats periodically, like an oscillator,
     # and that also periodically emits spaceships. but here the gun is not emit periodically and the left end did not work.
