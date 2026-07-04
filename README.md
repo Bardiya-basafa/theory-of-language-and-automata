@@ -110,8 +110,8 @@ Through this project, students will:
 
 For detailed instructions on running and completing each part:
 
-- See [Part 1 - Busy Beaver/README.md](Part%201%20-%20Busy%20Beaver/README.md) for Turing machine implementation
-- See [Part 2 - GoL & Langton's Ant/README.md](Part%202%20-%20GoL%20&%20Langton's%20Ant/README.md) for cellular automata implementation
+- See [Part 1 - Busy Beaver/README.md](Part%201%20-%20Busy%20Beaver/README.md) for Turing machine implementation.
+- See [Part 2 - GoL & Langton's Ant/README.md](Part%202%20-%20GoL%20&%20Langton's%20Ant/README.md) for cellular automata implementation.
 
 ## References
 
@@ -128,5 +128,6 @@ For detailed instructions on running and completing each part:
 - Digital Logic Gates in Conway's Game of Life
 
 ---
+
 
 *For questions or contributions, please contact the course instructors or project designers.*
