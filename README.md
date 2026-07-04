@@ -106,21 +106,33 @@ Through this project, students will:
 - **Scientific Computing**: NumPy, SciPy (for optimized cellular automata computation)
 - **File Formats**: RLE (Run Length Encoded) and Plaintext for Game of Life patterns
 
+
+
 ## Getting Started
+
+
 
 For detailed instructions on running and completing each part:
 
 - See [Part 1 - Busy Beaver/README.md](Part%201%20-%20Busy%20Beaver/README.md) for Turing machine implementation.
 - See [Part 2 - GoL & Langton's Ant/README.md](Part%202%20-%20GoL%20&%20Langton's%20Ant/README.md) for cellular automata implementation.
 
+
+
 ## References
+
+
 
 - Moore, C., Mertens, S., 2011. The Nature Of Computation. Oxford University Press.
 - Conway's Game of Life - Wikipedia and LifeWiki
 - Langton's Ant - Wikipedia
 - Busy Beaver Database and Problem
 
+
+
 ## Additional Resources
+
+
 
 - Computerphile: Turing Machine Primer
 - Computerphile: Busy Beaver Turing Machines
