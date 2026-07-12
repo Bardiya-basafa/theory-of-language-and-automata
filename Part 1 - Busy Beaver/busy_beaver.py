@@ -118,18 +118,18 @@ beaver_programs = [
         "d0": "d1r",
         "d1": "a0r",
     },
-    {
+{
         # 5-state Busy Beaver
         "a0": "b1r",
-        "a1": "c1l",
+        "a1": "c0l",
         "b0": "c1r",
-        "b1": "b1r",
-        "c0": "d1r",
-        "c1": "e0l",
-        "d0": "a1l",
-        "d1": "d1l",
-        "e0": "h1r",
-        "e1": "a0l",
+        "b1": "d1r",
+        "c0": "a1l",
+        "c1": "b0r",
+        "d0": "e0r",
+        "d1": "h1r",
+        "e0": "c1l",
+        "e1": "a1r",
     },
     {
         # 6-state Busy Beaver
@@ -152,17 +152,15 @@ beaver_programs = [
 def busy_beaver(n):
     def tape_callback(tape, tape_changed):
         if tape_changed:
-            # print("".join(tape))
-            pass
+            print("".join(tape))
 
     program = beaver_programs[n]
 
-    print("Running Busy Beaver with %d states." % (n + 1))
+    print("Running Busy Beaver with %d states." % n)
     tm = TuringMachine(program, "a", "h", "0")
     tm.set_tape_callback(tape_callback)
     tm.run()
     print("Busy beaver finished in %d steps." % tm.moves)
-    print("Busy beaver wrote %d ones." % tm.tape.count("1"))
 
 
 def usage():
@@ -180,6 +178,3 @@ if __name__ == "__main__":
     if n < 1 or n > 6:
         print("n must be between 1 and 6 inclusive")
         print()
-        usage()
-
-    busy_beaver(n - 1)
