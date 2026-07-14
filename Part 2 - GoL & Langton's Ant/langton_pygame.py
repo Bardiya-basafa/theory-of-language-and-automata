@@ -25,30 +25,23 @@ MULTI_COLOR_RULES = {
     3: (0, "L"),
 }
 
-TRIANGLE_RULES = {
+
+CARDIOID_RULES = {
     0: (1, "L"),
     1: (2, "L"),
-    2: (0, "R"),
+    2: (3, "R"),
+    3: (0, "R"),
 }
 
-ANT_RRLDDDULRRLLLL_RULES = {
+MAZE = {
     0: (1, "R"),
-    1: (2, "R"),
+    1: (2, "L"),
     2: (3, "L"),
-    3: (4, "D"),
-    4: (5, "D"),
-    5: (6, "D"),
-    6: (7, "U"),
-    7: (8, "L"),
-    8: (9, "R"),
-    9: (10, "R"),
-    10: (11, "L"),
-    11: (12, "L"),
-    12: (13, "L"),
-    13: (0, "L"),
+    3: (0, "R"),
 }
 
-SYMMETRIC_STAR_RULES = {
+
+GROWING_TRIANGLE_RULES = {
     0: (1, "R"),
     1: (2, "R"),
     2: (3, "L"),
@@ -58,42 +51,59 @@ SYMMETRIC_STAR_RULES = {
     6: (7, "L"),
     7: (8, "L"),
     8: (9, "L"),
-    9: (0, "R"),
+    9: (10, "R"),
+    10: (11, "R"),
+    11: (0, "R"),
 }
 
-SYMMETRIC_PYRAMID_RULES = {
+
+LOGARITHMIC_SPIRAL_RULES = {
     0: (1, "R"),
     1: (2, "L"),
     2: (3, "L"),
-    3: (4, "R"),
+    3: (4, "L"),
     4: (5, "L"),
-    5: (6, "L"),
-    6: (0, "R"),
-}
+    5: (6, "R"),
+    6: (7, "R"),
+    7: (8, "R"),
+    8: (9, "L"),
+    9: (10, "L"),
+    10: (11, "L"),
+    11: (0, "R"),
+    }
 
-CRYSTAL_GRID_RULES = {
+
+ARCHIMEDES_SPIRAL_RULES = {
     0: (1, "L"),
-    1: (2, "L"),
+    1: (2, "R"),
     2: (3, "R"),
     3: (4, "R"),
     4: (5, "R"),
     5: (6, "L"),
-    6: (7, "R"),
-    7: (0, "L"),
-}
+    6: (7, "L"),
+    7: (8, "L"),
+    8: (9, "R"),
+    9: (10, "R"),
+    10: (0, "R"),
+    }
 
 
 PALETTE = [
-    (0, 0, 0),
-    (240, 240, 240),
-    (77, 166, 255),
-    (255, 130, 67),
-    (134, 199, 86),
-    (186, 112, 255),
-    (255, 207, 64),
-    (80, 214, 193),
+    (8, 10, 20),        
+    (245, 245, 245),    
+    (66, 165, 245),     
+    (255, 90, 95),      
+    (80, 210, 130),     
+    (190, 100, 255),    
+    (255, 205, 60),     
+    (40, 220, 210),     
+    (255, 135, 50),     
+    (255, 90, 190),     
+    (120, 145, 255),    
+    (175, 230, 70),     
+    (220, 120, 75),     
+    (120, 220, 255),    
 ]
-
 
 def build_surface(grid, cell_scale, ant_position=None, ant_color=(220, 40, 40)):
     """Convert the ant grid into a pygame surface."""
@@ -148,7 +158,8 @@ def run_visualizer(ant, cell_scale=6, fps=60, max_steps=None, title="Langton's A
 
         ant.step()
         grid = ant.get_states()
-        steps += 1
+        for _ in range(100):
+            ant.step()
         if max_steps is not None and steps >= max_steps:
             finished = True
 
@@ -166,7 +177,7 @@ def parse_args():
     parser.add_argument(
         "--cell-scale", type=int, default=6, help="Pixel scale per cell"
     )
-    parser.add_argument("--fps", type=int, default=1000, help="Frames per second")
+    parser.add_argument("--fps", type=int, default=100000, help="Frames per second")
     parser.add_argument(
         "--steps", type=int, default=None, help="Maximum simulation steps"
     )
@@ -183,7 +194,7 @@ def main():
     args = parse_args()
     start_row = args.row if args.row is not None else args.size // 2
     start_col = args.col if args.col is not None else args.size // 2
-    rules = MULTI_COLOR_RULES if args.multi_color else SYMMETRIC_STAR_RULES
+    rules = GROWING_TRIANGLE_RULES
 
     ant = LangtonsAnt(args.size, (start_row, start_col), rules)
     run_visualizer(
