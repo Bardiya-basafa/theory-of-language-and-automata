@@ -180,53 +180,52 @@ class GameOfLife:
         self.grid[index[0] + 2, index[1] + 1] = self.aliveValue
         self.grid[index[0] + 2, index[1] + 2] = self.aliveValue
 
+
     def insertGliderGun(self, index=(0, 0)):
-        r, c = index
-        val = self.aliveValue
+        self.grid[index[0] + 1, index[1] + 26] = self.aliveValue
 
-        # Left Square (Block)
-        self.grid[r + 5, c + 1] = val
-        self.grid[r + 5, c + 2] = val
-        self.grid[r + 6, c + 1] = val
-        self.grid[r + 6, c + 2] = val
+        self.grid[index[0] + 2, index[1] + 24] = self.aliveValue
+        self.grid[index[0] + 2, index[1] + 26] = self.aliveValue
 
-        # Left Shuttle
-        self.grid[r + 5, c + 11] = val
-        self.grid[r + 6, c + 11] = val
-        self.grid[r + 7, c + 11] = val
-        self.grid[r + 4, c + 12] = val
-        self.grid[r + 8, c + 12] = val
-        self.grid[r + 3, c + 13] = val
-        self.grid[r + 3, c + 14] = val
-        self.grid[r + 9, c + 13] = val
-        self.grid[r + 9, c + 14] = val
-        self.grid[r + 6, c + 15] = val
-        self.grid[r + 4, c + 16] = val
-        self.grid[r + 8, c + 16] = val
-        self.grid[r + 5, c + 17] = val
-        self.grid[r + 6, c + 17] = val
-        self.grid[r + 7, c + 17] = val
-        self.grid[r + 6, c + 18] = val
+        self.grid[index[0] + 3, index[1] + 14] = self.aliveValue
+        self.grid[index[0] + 3, index[1] + 15] = self.aliveValue
+        self.grid[index[0] + 3, index[1] + 22] = self.aliveValue
+        self.grid[index[0] + 3, index[1] + 23] = self.aliveValue
+        self.grid[index[0] + 3, index[1] + 36] = self.aliveValue
+        self.grid[index[0] + 3, index[1] + 37] = self.aliveValue
 
-        # Right Shuttle
-        self.grid[r + 3, c + 21] = val
-        self.grid[r + 4, c + 21] = val
-        self.grid[r + 5, c + 21] = val
-        self.grid[r + 3, c + 22] = val
-        self.grid[r + 4, c + 22] = val
-        self.grid[r + 5, c + 22] = val
-        self.grid[r + 2, c + 23] = val
-        self.grid[r + 6, c + 23] = val
-        self.grid[r + 1, c + 25] = val
-        self.grid[r + 2, c + 25] = val
-        self.grid[r + 6, c + 25] = val
-        self.grid[r + 7, c + 25] = val
+        self.grid[index[0] + 4, index[1] + 13] = self.aliveValue
+        self.grid[index[0] + 4, index[1] + 17] = self.aliveValue
+        self.grid[index[0] + 4, index[1] + 22] = self.aliveValue
+        self.grid[index[0] + 4, index[1] + 23] = self.aliveValue
+        self.grid[index[0] + 4, index[1] + 36] = self.aliveValue
+        self.grid[index[0] + 4, index[1] + 37] = self.aliveValue
 
-        # Right Square (Block)
-        self.grid[r + 3, c + 35] = val
-        self.grid[r + 4, c + 35] = val
-        self.grid[r + 3, c + 36] = val
-        self.grid[r + 4, c + 36] = val
+        self.grid[index[0] + 5, index[1] + 1 + 1] = self.aliveValue
+        self.grid[index[0] + 5, index[1] + 2 + 1] = self.aliveValue
+        self.grid[index[0] + 5, index[1] + 12] = self.aliveValue
+        self.grid[index[0] + 5, index[1] + 18] = self.aliveValue
+        self.grid[index[0] + 5, index[1] + 22] = self.aliveValue
+        self.grid[index[0] + 5, index[1] + 23] = self.aliveValue
+
+        self.grid[index[0] + 6, index[1] + 1 + 1] = self.aliveValue
+        self.grid[index[0] + 6, index[1] + 2 + 1] = self.aliveValue
+        self.grid[index[0] + 6, index[1] + 12] = self.aliveValue
+        self.grid[index[0] + 6, index[1] + 16] = self.aliveValue
+        self.grid[index[0] + 6, index[1] + 18] = self.aliveValue
+        self.grid[index[0] + 6, index[1] + 19] = self.aliveValue
+        self.grid[index[0] + 6, index[1] + 24] = self.aliveValue
+        self.grid[index[0] + 6, index[1] + 26] = self.aliveValue
+
+        self.grid[index[0] + 7, index[1] + 12] = self.aliveValue
+        self.grid[index[0] + 7, index[1] + 18] = self.aliveValue
+        self.grid[index[0] + 7, index[1] + 26] = self.aliveValue
+
+        self.grid[index[0] + 8, index[1] + 13] = self.aliveValue
+        self.grid[index[0] + 8, index[1] + 17] = self.aliveValue
+
+        self.grid[index[0] + 9, index[1] + 14] = self.aliveValue
+        self.grid[index[0] + 9, index[1] + 15] = self.aliveValue
 
     def insertEater(self, index=(0, 0)):
         self.insertFromFile("pat-eater.cells", index=index)
