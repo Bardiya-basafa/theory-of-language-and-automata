@@ -118,33 +118,27 @@ beaver_programs = [
         "d0": "d1r",
         "d1": "a0r",
     },
-{
+    {
         # 5-state Busy Beaver
         "a0": "b1r",
-        "a1": "c0l",
+        "a1": "c1l",
         "b0": "c1r",
-        "b1": "d1r",
-        "c0": "a1l",
-        "c1": "b0r",
-        "d0": "e0r",
-        "d1": "h1r",
-        "e0": "c1l",
-        "e1": "a1r",
+        "b1": "b1r",
+        "c0": "d1r",
+        "c1": "e0l",
+        "d0": "a1l",
+        "d1": "d1l",
+        "e0": "h1r",
+        "e1": "a0l",
     },
     {
         # 6-state Busy Beaver
-        "a0": "b1r",
-        "a1": "a1r",
-        "b0": "c1r",
-        "b1": "h1r",
-        "c0": "d1l",
-        "c1": "f0r",
-        "d0": "a1r",
-        "d1": "e0l",
-        "e0": "d0l",
-        "e1": "c1r",
-        "f0": "a1r",
-        "f1": "e0r",
+        # TODO: این دیکشنری در متن ارسالی ناقص بود (فقط عنوان کامنتش اومده بود).
+        # ترنزیشن‌های حالت‌های a تا f رو اینجا اضافه کن، مثلاً:
+        # "a0": "b1r",
+        # "a1": "...",
+        # ...
+        # "f1": "...",
     },
 ]
 
@@ -152,29 +146,43 @@ beaver_programs = [
 def busy_beaver(n):
     def tape_callback(tape, tape_changed):
         if tape_changed:
-            print("".join(tape))
+            # print("".join(tape))
+            pass
 
     program = beaver_programs[n]
 
-    print("Running Busy Beaver with %d states." % n)
+    print("Running Busy Beaver with %d states." % (n + 1))
     tm = TuringMachine(program, "a", "h", "0")
     tm.set_tape_callback(tape_callback)
     tm.run()
     print("Busy beaver finished in %d steps." % tm.moves)
+    print("Busy beaver wrote %d ones." % tm.tape.count("1"))
 
 
 def usage():
-    print("Usage: %s [1|2|3|4|5|6]" % sys.argv[0])
-    print("Runs Busy Beaver problem for 1 or 2 or 3 or 4 or 5 or 6 states.")
-    sys.exit(1)
+    # TODO: بدنه‌ی این تابع در متن ارسالی نبود.
+    # چیزی شبیه به این می‌تونه باشه:
+    print("Usage: python turing_machine.py <n>")
+    print("  n: number of states (1-6)")
 
 
-if __name__ == "__main__":
-    if len(sys.argv[1:]) < 1:
+def main():
+    # TODO: بدنه‌ی تابع main هم در متن ارسالی نبود.
+    # پیشنهاد: خوندن n از آرگومان‌های ورودی خط فرمان
+    if len(sys.argv) != 2:
         usage()
+        return
 
-    n = int(sys.argv[1])
+    n = int(sys.argv[1]) - 1
 
     if n < 1 or n > 6:
         print("n must be between 1 and 6 inclusive")
         print()
+        usage()
+        return
+
+    busy_beaver(n)
+
+
+if __name__ == "__main__":
+    main()
