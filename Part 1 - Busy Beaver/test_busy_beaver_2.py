@@ -78,15 +78,15 @@ bbeaver5 = TuringMachine(
     {
         # TODO: Part III e) - Write your own transition rules for the 5-card Busy Beaver program here
         ("a", "0"): ("b", "1", "R"),
-        ("a", "1"): ("c", "1", "L"),
+        ("a", "1"): ("c", "0", "L"),
         ("b", "0"): ("c", "1", "R"),
-        ("b", "1"): ("b", "1", "R"),
-        ("c", "0"): ("d", "1", "R"),
-        ("c", "1"): ("e", "0", "L"),
-        ("d", "0"): ("a", "1", "L"),
-        ("d", "1"): ("d", "1", "L"),
-        ("e", "0"): ("h", "1", "h"),
-        ("e", "1"): ("a", "0", "L"),
+        ("b", "1"): ("d", "1", "R"),
+        ("c", "0"): ("a", "1", "L"),
+        ("c", "1"): ("b", "0", "R"),
+        ("d", "0"): ("e", "0", "R"),
+        ("d", "1"): ("h", "1", "R"),
+        ("e", "0"): ("c", "1", "L"),
+        ("e", "1"): ("a", "1", "R"),
     },
     start_state="a",
     accept_state="h",
@@ -97,7 +97,7 @@ bbeaver5 = TuringMachine(
 
 def run(input_):
     for w in [input_]:
-        bbeaver4.debug(w, step_limit=1000)
+        bbeaver5.debug(w, step_limit=3000000)
         print()
         # This machine runs for 47176870 steps, writing 4098 1s, and then halts. So BB(5) is at least 47176870
         # print("BB with 5 states")
