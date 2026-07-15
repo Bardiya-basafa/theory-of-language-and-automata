@@ -13,10 +13,10 @@ def main():
     """
     Animated logic gates
     """
-    life = GliderLogicGates(N=N)
+    life = GliderLogicGates()
 
     # life.setup_not_gate(False)
-    life.setup_and_gate(False,True)
+    life.setup_and_gate(input_a_present=True, input_b_present=False)
     # life.setup_not_gate(True)
 
     run_pygame_life(

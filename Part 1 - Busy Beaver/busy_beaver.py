@@ -152,7 +152,8 @@ beaver_programs = [
 def busy_beaver(n):
     def tape_callback(tape, tape_changed):
         if tape_changed:
-            print("".join(tape))
+            # print("".join(tape))
+            pass
 
     program = beaver_programs[n]
 
@@ -161,16 +162,15 @@ def busy_beaver(n):
     tm.set_tape_callback(tape_callback)
     tm.run()
     print("Busy beaver finished in %d steps." % tm.moves)
+    print("Busy beaver finished in %d ones." % tm.tape.count("1"))
 
 
 def usage():
-    # TODO: بدنه‌ی این تابع در متن ارسالی نبود.
     print("Usage: python turing_machine.py <n>")
     print("  n: number of states (1-6)")
 
 
 def main():
-    # TODO: بدنه‌ی تابع main هم در متن ارسالی نبود.
     if len(sys.argv) != 2:
         usage()
         return

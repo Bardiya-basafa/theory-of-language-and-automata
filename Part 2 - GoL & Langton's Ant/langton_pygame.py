@@ -171,11 +171,11 @@ def run_visualizer(ant, cell_scale=6, fps=60, max_steps=None, title="Langton's A
 def parse_args():
     """Parse command-line options for the visualizer."""
     parser = argparse.ArgumentParser(description="Langton's Ant pygame visualizer")
-    parser.add_argument("--size", type=int, default=200, help="Grid size (NxN)")
+    parser.add_argument("--size", type=int, default=300, help="Grid size (NxN)")
     parser.add_argument("--row", type=int, default=None, help="Starting row")
     parser.add_argument("--col", type=int, default=None, help="Starting column")
     parser.add_argument(
-        "--cell-scale", type=int, default=6, help="Pixel scale per cell"
+        "--cell-scale", type=int, default=3, help="Pixel scale per cell"
     )
     parser.add_argument("--fps", type=int, default=100000, help="Frames per second")
     parser.add_argument(
@@ -194,7 +194,7 @@ def main():
     args = parse_args()
     start_row = args.row if args.row is not None else args.size // 2
     start_col = args.col if args.col is not None else args.size // 2
-    rules = GROWING_TRIANGLE_RULES
+    rules = ARCHIMEDES_SPIRAL_RULES
 
     ant = LangtonsAnt(args.size, (start_row, start_col), rules)
     run_visualizer(
