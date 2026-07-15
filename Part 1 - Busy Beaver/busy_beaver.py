@@ -133,12 +133,18 @@ beaver_programs = [
     },
     {
         # 6-state Busy Beaver
-        # TODO: این دیکشنری در متن ارسالی ناقص بود (فقط عنوان کامنتش اومده بود).
-        # ترنزیشن‌های حالت‌های a تا f رو اینجا اضافه کن، مثلاً:
-        # "a0": "b1r",
-        # "a1": "...",
-        # ...
-        # "f1": "...",
+        "a0": "b1r",
+        "a1": "a1r",
+        "b0": "c1r",
+        "b1": "h1r",
+        "c0": "d1l",
+        "c1": "f0r",
+        "d0": "a1r",
+        "d1": "e0l",
+        "e0": "d0l",
+        "e1": "c1r",
+        "f0": "a1r",
+        "f1": "e0r",
     },
 ]
 
@@ -147,16 +153,14 @@ def busy_beaver(n):
     def tape_callback(tape, tape_changed):
         if tape_changed:
             print("".join(tape))
-            
 
     program = beaver_programs[n]
 
-    print("Running Busy Beaver with %d states." % n)
+    print("Running Busy Beaver with %d states." % (n + 1))
     tm = TuringMachine(program, "a", "h", "0")
     tm.set_tape_callback(tape_callback)
     tm.run()
     print("Busy beaver finished in %d steps." % tm.moves)
-    
 
 
 def usage():
@@ -171,7 +175,7 @@ def main():
         usage()
         return
 
-    n = int(sys.argv[1]) 
+    n = int(sys.argv[1])
 
     if n < 1 or n > 6:
         print("n must be between 1 and 6 inclusive")
