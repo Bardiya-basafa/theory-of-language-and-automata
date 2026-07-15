@@ -6,7 +6,7 @@ from logic_gates import GliderLogicGates
 from pygame_viewer import run_pygame_life
 
 N = 400
-CELL_SCALE = 2
+CELL_SCALE = 4
 
 
 def main():
@@ -16,11 +16,12 @@ def main():
     life = GliderLogicGates()
 
     # life.setup_not_gate(False)
-    life.setup_and_gate(input_a_present=True, input_b_present=False)
+    lf = life.setup_and_gate(grid_size=200, input_a_present=True, input_b_present=True)
+    lf2 = life.setup_not_gate(grid_size=200, input_a_present=False)
     # life.setup_not_gate(True)
 
     run_pygame_life(
-        life.gol,
+        lf2,
         cell_scale=CELL_SCALE,
         fps=60,
         max_frames=10000,

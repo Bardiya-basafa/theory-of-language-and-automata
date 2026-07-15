@@ -121,15 +121,15 @@ beaver_programs = [
     {
         # 5-state Busy Beaver
         "a0": "b1r",
-        "a1": "c0l",
+        "a1": "c1l",
         "b0": "c1r",
         "b1": "b1r",
-        "c0": "a1l",
-        "c1": "b0r",
-        "d0": "e0r",
-        "d1": "h1r",
-        "e0": "c1l",
-        "e1": "a1r",
+        "c0": "d1r",
+        "c1": "e0l",
+        "d0": "a1l",
+        "d1": "d1l",
+        "e0": "h1r",
+        "e1": "a0l",
     },
     {
         # 6-state Busy Beaver

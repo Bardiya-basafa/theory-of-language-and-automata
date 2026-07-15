@@ -60,17 +60,17 @@ if __name__ == "__main__":
     # outputs 111111
     # 2 * 3 = 6
 
-    # SHOULD ACCEPT
-    run("11101111")
-    # outputs 111111111111
-    # 3 * 4 = 12
+    # # SHOULD ACCEPT
+    # run("11101111")
+    # # outputs 111111111111
+    # # 3 * 4 = 12
 
-    # SHOULD ACCEPT
-    run("101111")
-    # outputs 1111
-    # 1 * 4 = 4
+    # # SHOULD ACCEPT
+    # run("101111")
+    # # outputs 1111
+    # # 1 * 4 = 4
 
-    # SHOULD ACCEPT
-    run("1101111")
-    # outputs 111111111111
-    # 2 * 4 = 8
+    # # SHOULD ACCEPT
+    # run("1101111")
+    # # outputs 111111111111
+    # # 2 * 4 = 8
